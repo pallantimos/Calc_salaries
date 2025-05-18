@@ -149,11 +149,7 @@ class JSONReportSerializer(AbstractReportSerializer):
 def main() -> None:
     arg_parser = create_arg_parser()
 
-    try:
-        args = arg_parser.parse_args()
-    except Exception as e:
-        print(e.__class__)
-        return
+    args = arg_parser.parse_args()
 
     report_type = args.report
     file_names = args.files
@@ -162,7 +158,7 @@ def main() -> None:
     if report_type == ReportType.PAYOUT:
         report_handler = PayoutReportHandler(file_names=file_names)
     else:
-        raise Exception('Unknown report type')
+        print(f"Unknown report type.")
 
     try:
         report_data = report_handler.generate_report()
@@ -173,7 +169,9 @@ def main() -> None:
     if outgoing_format == OutgoingFormatType.JSON:
         report_serializer = JSONReportSerializer()
     else:
-        raise Exception('Unknown outgoing format')
+        print('Unknown outgoing format.')
+        return
+
     report_serializer.serialize_to_file(data=report_data, file_name=report_type)
 
 
