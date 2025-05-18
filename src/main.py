@@ -1,6 +1,7 @@
 import argparse
 import json
 import re
+from argparse import ArgumentParser
 from contextlib import ExitStack
 from enum import StrEnum
 
@@ -13,7 +14,7 @@ class OutgoingFormatType(StrEnum):
     JSON = 'json'
 
 
-def create_arg_parser():
+def create_arg_parser() -> ArgumentParser:
     """
         Парсит аргументы терминала.
         Аргумент files - путь до файлов.
@@ -45,14 +46,14 @@ def create_arg_parser():
 
 class AbstractReportHandler:
     _file_names = []
+
     def generate_report(self, file_names: list = '') -> dict:
         pass
 
 
 class AbstractReportSerializer:
-    def serialize_to_file(self, data, file_name) -> None:
+    def serialize_to_file(self, data: dict, file_name: str) -> None:
         pass
-
 
 
 class PayoutReportHandler(AbstractReportHandler):
@@ -104,7 +105,7 @@ class PayoutReportHandler(AbstractReportHandler):
                         "hours": file_dict[i][index_hours_work],
                         'rate': file_dict[i][index_rate],
                         'payout': int(file_dict[i][index_hours_work]) * int(file_dict[i][index_rate]),
-                }
+                    }
         for i in self._payout_dict:
             sum_payout = 0
             sum_hours = 0
@@ -121,7 +122,7 @@ class PayoutReportHandler(AbstractReportHandler):
 
 
 class JSONReportSerializer(AbstractReportSerializer):
-    def serialize_to_file(self, data, file_name) -> None:
+    def serialize_to_file(self, data: dict, file_name: str) -> None:
         """
             Сериализует данные в JSON файл.
 

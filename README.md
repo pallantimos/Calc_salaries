@@ -20,6 +20,8 @@ git clone https://github.com/pallantimos/Homework.git
 ````
 python main.py test1.csv --report payout
 ````
+
+Пример отчета:
 ![img.png](img.png)
 
 # Тестирование
