@@ -71,40 +71,40 @@ class PayoutReportHandler(AbstractReportHandler):
         """
 
         r_list = ['r'] * len(self._file_names)
-        file_dict = []
+        file_list = []
 
         with ExitStack() as stack:
             files = [stack.enter_context(open(fn, mode))
                      for fn, mode in zip(self._file_names, r_list)]
             for file in files:
                 file_list = file.readlines()
-                file_dict = [line.split(',') for line in file_list]
+                file_list = [line.split(',') for line in file_list]
                 index_rate = 0
                 index_hours_work = 0
                 index_department = 0
                 index_name = 0
                 index_email = 0
-                for i in range(0, len(file_dict[0])):
-                    if re.search(r'hourly_rate|salary|rate', file_dict[0][i]):
+                for i in range(0, len(file_list[0])):
+                    if re.search(r'hourly_rate|salary|rate', file_list[0][i]):
                         index_rate = i
-                    elif file_dict[0][i] == 'hours_worked':
+                    elif file_list[0][i] == 'hours_worked':
                         index_hours_work = i
-                    elif file_dict[0][i] == 'department':
+                    elif file_list[0][i] == 'department':
                         index_department = i
-                    elif file_dict[0][i] == 'name':
+                    elif file_list[0][i] == 'name':
                         index_name = i
-                    elif file_dict[0][i] == 'email':
+                    elif file_list[0][i] == 'email':
                         index_email = i
 
                 sum_hours_work = 0
-                for i in range(1, len(file_dict)):
-                    if file_dict[i][index_department] not in self._payout_dict:
-                        self._payout_dict[file_dict[i][index_department]] = {}
+                for i in range(1, len(file_list)):
+                    if file_list[i][index_department] not in self._payout_dict:
+                        self._payout_dict[file_list[i][index_department]] = {}
 
-                    self._payout_dict[file_dict[i][index_department]][file_dict[i][index_name]] = {
-                        "hours": file_dict[i][index_hours_work],
-                        'rate': file_dict[i][index_rate],
-                        'payout': int(file_dict[i][index_hours_work]) * int(file_dict[i][index_rate]),
+                    self._payout_dict[file_list[i][index_department]][file_list[i][index_name]] = {
+                        "hours": file_list[i][index_hours_work],
+                        'rate': file_list[i][index_rate],
+                        'payout': int(file_list[i][index_hours_work]) * int(file_list[i][index_rate]),
                     }
         for i in self._payout_dict:
             sum_payout = 0
